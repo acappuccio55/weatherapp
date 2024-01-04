@@ -25,10 +25,6 @@ public class WeatherService {
         this.restTemplate = restTemplate;
     }
 
-    public String home(){
-        return "Welcome to my webservice!";
-    }
-
     //Este metodo realiza la llamada a la API, procesa la respuesta y guarda la informacion en la base de datos
     public WeatherInfo fetchAndSaveWeatherInfo(String location) {
         WeatherInfo apiResponse = callAccuWeatherApi(location);

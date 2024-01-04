@@ -18,19 +18,9 @@ public class WeatherController {
     @Autowired
     private WeatherService weatherService;
 
-    // Ubicación predeterminada
-    private static final String DEFAULT_LOCATION = "Montevideo";
-
-    //Test
-    @GetMapping(value = "/")
-    public String holaMundo(){
-        return weatherService.home();
-    }
-
-
     @PostMapping
     @GetMapping
-    public ResponseEntity<WeatherInfo> getWeatherInfo(@RequestParam(required = true, defaultValue = DEFAULT_LOCATION) String location) {
+    public ResponseEntity<WeatherInfo> getWeatherInfo(@RequestParam(required = true) String location) {
         try {
             WeatherInfo weatherInfo = weatherService.fetchAndSaveWeatherInfo(location);
             return ResponseEntity.ok(weatherInfo);
