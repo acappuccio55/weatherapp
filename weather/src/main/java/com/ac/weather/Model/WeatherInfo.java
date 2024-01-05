@@ -1,13 +1,18 @@
 package com.ac.weather.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
+/*
+@Entity indica que WeatherInfo es una entidad JPA
+y se mapeara a una tabla
+@JsonIgnoreProperties(ignoreUnknown = true) le dice al serializador que ignore cualquier campo desconocido
+*/
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WeatherInfo {
 
+    //Anotaciones para que id sea clave primaria en la tabla
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
