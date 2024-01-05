@@ -4,18 +4,24 @@ import com.ac.weather.Model.WeatherInfo;
 import com.ac.weather.Repository.WeatherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 //La anotacion indica que es una clase de servicio de Spring
 @Service
 public class WeatherService {
 
-    //Inyeccion de las dependencias weather repository y RestTemplate a traves de Autowired
     @Autowired
     private WeatherRepository weatherRepository;
 
-    //La anotacion Value se usa para inyectar la clave de la API de AccuWeather desde el archivo propiedades de la app
     @Value("${accuweather.api.key}")
     private String accuWeatherApiKey;
 
@@ -25,29 +31,44 @@ public class WeatherService {
         this.restTemplate = restTemplate;
     }
 
-    //Este metodo realiza la llamada a la API, procesa la respuesta y guarda la informacion en la base de datos
-    public WeatherInfo fetchAndSaveWeatherInfo(String location) {
-        WeatherInfo apiResponse = callAccuWeatherApi(location);
+    public Map<String, Object> fetchAndSaveWeatherInfo(String location) {
+        Map<String, Object>[] apiResponse = callAccuWeatherApi(location);
         WeatherInfo weatherInfo = processApiResponse(apiResponse, location);
-        return weatherRepository.save(weatherInfo);
+        weatherRepository.save(weatherInfo);
+        return createResponse(weatherInfo.getLocation(), weatherInfo.getTemperature());
     }
 
-    //Este metodo realiza la llamada usando RestTemplate
-    private WeatherInfo callAccuWeatherApi(String location) {
-        //Se arma la URL inyectandolo con la anotacion Value de accuWeatherApiKey
+    private Map<String, Object>[] callAccuWeatherApi(String location) {
         String apiUrl = "http://dataservice.accuweather.com/currentconditions/v1/{location}?apikey={accuWeatherApiKey}";
-        return restTemplate.getForObject(apiUrl, WeatherInfo.class, location, accuWeatherApiKey);
+        try {
+            return restTemplate.getForObject(apiUrl, Map[].class, location, accuWeatherApiKey);
+        } catch (HttpStatusCodeException ex) {
+            System.out.println(ex.getResponseBodyAsString());
+            return null;
+        }
     }
 
-    //Procesa la respuesta de la API y crea un nuevo objeto WeatherInfo con la ubicacion y la temperatura
-    private WeatherInfo processApiResponse(WeatherInfo apiResponse, String location) {
+    private WeatherInfo processApiResponse(Map<String, Object>[] apiResponse, String location) {
         WeatherInfo weatherInfo = new WeatherInfo();
         weatherInfo.setLocation(location);
 
-        if (apiResponse != null) {
-            weatherInfo.setTemperature(apiResponse.getTemperature());
+        if (apiResponse != null && apiResponse.length > 0) {
+            Map<String, Object> condition = apiResponse[0];
+            if (condition != null) {
+                Map<String, Object> temperature = (Map<String, Object>) condition.get("Temperature");
+                if (temperature != null) {
+                    weatherInfo.setTemperature(temperature.get("Metric").toString());
+                }
+            }
         }
 
         return weatherInfo;
+    }
+
+    private Map<String, Object> createResponse(String location, String temperature) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("location", location);
+        response.put("temperature", temperature);
+        return response;
     }
 }

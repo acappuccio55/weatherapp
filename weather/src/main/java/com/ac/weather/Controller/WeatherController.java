@@ -7,6 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/weather")
 public class WeatherController {
@@ -15,12 +18,12 @@ public class WeatherController {
     private WeatherService weatherService;
 
     @GetMapping
-    public ResponseEntity<WeatherInfo> getWeatherInfo(@RequestParam String location) {
+    public ResponseEntity<Map<String, Object>> getWeatherInfo(@RequestParam String location) {
         try {
-            WeatherInfo weatherInfo = weatherService.fetchAndSaveWeatherInfo(location);
+            Map<String, Object> weatherInfo = weatherService.fetchAndSaveWeatherInfo(location);
             return ResponseEntity.ok(weatherInfo);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new WeatherInfo());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyMap());
         }
     }
 }
