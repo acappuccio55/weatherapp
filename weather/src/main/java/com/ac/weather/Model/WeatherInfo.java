@@ -1,10 +1,10 @@
 package com.ac.weather.Model;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
-//@Table(schema = "Weather")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class WeatherInfo {
 
     @Id
@@ -12,6 +12,9 @@ public class WeatherInfo {
     private Long id;
     private String location;
     private String temperature;
+
+    public WeatherInfo() {
+    }
 
     // Getters y setters
 
