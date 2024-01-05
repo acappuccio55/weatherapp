@@ -4,9 +4,9 @@ Este proyecto es un servicio de pronóstico del tiempo que utiliza la API de Acc
 
 ## Requisitos
 
-- Java JDK 8 o superior
-- Maven
-- IDE compatible con Spring Boot
+- Java JDK 8 o superior (En este caso use el 17 porque ya lo tenia instalado)
+- Maven (Use 3.9.6)
+- IDE compatible con Spring Boot (Use Intellij Community Edition)
 
 ## Configuración
 
@@ -20,6 +20,8 @@ Este proyecto es un servicio de pronóstico del tiempo que utiliza la API de Acc
 3. Ingresar con las siguientes credenciales:
     -User Name: sa
     -Password: master
+
+4. Correr la app desde WeatherApplication.java
 
 4. Utilizar la url http://localhost:8080/api/weather?location=KEY_CIUDAD y reemplazar KEY_CIUDAD por alguno de los siguientes ejemplos:
     -Nueva York: 349727
