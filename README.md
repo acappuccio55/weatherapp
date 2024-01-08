@@ -17,7 +17,7 @@ Este proyecto es un servicio de pronóstico del tiempo que utiliza la API de Acc
     Driver Class: org.h2.Driver
     JDBC URL: jdbc:h2:mem:testdb
 
-3. Ingresar con las siguientes credenciales:
+3. Ingresar a la url http://localhost:8080/h2-console con las siguientes credenciales: 
     -User Name: sa
     -Password: master
 
